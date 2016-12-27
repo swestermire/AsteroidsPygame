@@ -21,7 +21,8 @@ class Player(physicsFile.Physics):
                               "pointing vector" : [1,0],
                               "ship angle" : 0,
                               "rotation state" : False , 
-                              "thrust state" : False}
+                              "thrust state" : False,
+                              'draw handler obj' : ""}
         
         
         

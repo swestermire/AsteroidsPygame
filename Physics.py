@@ -22,9 +22,25 @@ class Physics:
         return self._linear_vel
         
     def set_pos(self):
-        self._pos[0] += self._linear_vel[0]
-        self._pos[1] += self._linear_vel[1]
-
+        
+        xPos = self._pos[0] + self._linear_vel[0]
+        yPos = self._pos[1] + self._linear_vel[1] 
+        pos = self.collisionCheck(xPos, yPos)
+        print('position is = ' , pos)
+        self._pos = [pos[0], pos[1]]        
+        
+    def collisionCheck(self, xPos, yPos):
+        if xPos > self._player_state['draw handler obj']._draw_states['screen width']:
+            return (0 , yPos)
+        elif xPos < 0:
+            return (self._player_state['draw handler obj']._draw_states['screen width'] , yPos)
+        elif yPos < 0:
+            return (xPos , self._player_state['draw handler obj']._draw_states['screen height'])
+        elif yPos > self._player_state['draw handler obj']._draw_states['screen height']:
+            return (xPos, 0)
+        else:
+            return (xPos, yPos)
+        
     def reset_pos(self, screen_height, screen_width):
         self._pos = [screen_width/2, screen_height/2]
         
@@ -62,14 +78,11 @@ class Physics:
 
         if self._player_state['thrust state']:
             pting_vector = self._player_state['pointing vector']
-            print("pting_vector = self._player_state['pointing vector'] = " , pting_vector)
-            print("velocity is = " , self._linear_vel)
             
             if HF.calc_speed(self._linear_vel) < self._max_linear_vel:
                 self._linear_vel[0] += pting_vector[0] * self._linear_acc[0]
                 self._linear_vel[1] += pting_vector[1] * self._linear_acc[1]
             
-            # !!! Need to update for velocity that exceeds maximum !!! #
             else:
                 self._linear_vel[0] += pting_vector[0] * self._linear_acc[0]
                 self._linear_vel[1] += pting_vector[1] * self._linear_acc[1]
@@ -83,7 +96,7 @@ class Physics:
              
              
     def friction_effects(self,linearVelocity):
-        finalVelocity = [0.9*linearVelocity[0], 0.9*linearVelocity[1]]
+        finalVelocity = [0.96*linearVelocity[0], 0.96*linearVelocity[1]]
         return finalVelocity
              
              

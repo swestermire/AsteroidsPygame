@@ -28,6 +28,8 @@ class AsteroidsGame(object):
             self._player_obj = player_obj
 
         def action(self, event, draw_handler_obj):
+            self._player_obj._player_state['draw handler obj'] = draw_handler_obj
+            
             if event.type == pygame.QUIT:
                 print('Game Shutdown')
                 self._event_states['running'] = False #this turns off the game
