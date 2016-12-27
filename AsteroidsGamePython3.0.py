@@ -35,14 +35,13 @@ class AsteroidsGame(object):
             elif event.type == pygame.KEYDOWN:  #handler for key press down events
 
                 if event.key == pygame.K_LEFT:
-                    self._player_obj._rotation_state = True
+                    self._player_obj._player_state['rotation state'] = (True, "left")
 
                 elif event.key == pygame.K_RIGHT:
-                    
-                    return
+                    self._player_obj._player_state['rotation state'] = (True, "right")
                     
                 elif event.key == pygame.K_UP:
-                    self._player_obj.thrust_on_off('on')
+                    self._player_obj._player_state['thrust state'] = True
 
                 elif event.key == pygame.K_DOWN:
                     return
@@ -50,16 +49,16 @@ class AsteroidsGame(object):
             elif event.type == pygame.KEYUP:  #handler for key up events
 
                 if event.key == pygame.K_LEFT:
-                    self._player_obj._rotation_state = False
+                    self._player_obj._player_state['rotation state'] = False
 
                 elif event.key == pygame.K_RIGHT:
-                    return
+                    self._player_obj._player_state['rotation state'] = False
 
                 elif event.key == pygame.K_DOWN:
                     return
 
                 elif event.key == pygame.K_UP:
-                    self._player_obj.thrust_on_off('off')
+                    self._player_obj._player_state['thrust state'] = False
 
             elif event.type == pygame.MOUSEBUTTONUP:
                 if draw_handler_obj.get_draw_state('screen state')  == 'blank screen':
@@ -97,7 +96,7 @@ class AsteroidsGame(object):
             self._ship_surface = self._clipped_ship.subsurface(self._clipped_ship.get_clip())
 
             self._player_obj.reset_pos(self._draw_states['screen height'],
-                                 self._draw_states['screen width'])            
+                                       self._draw_states['screen width'])            
             
         def game_state(self, mode):
             '''
@@ -112,12 +111,35 @@ class AsteroidsGame(object):
                 self._screen.blit(self._sized_nebula, (0,0))
 
                 self.update_rotated_image(self._ship_surface, self._player_obj)
+                
+                # this function call initiates the ship update/screen draw
                 self._screen.blit(self._ship_surface, self._player_obj.get_pos())
                 return self._screen
 
         def update_rotated_image(self, surface, obj):
-            if obj._rotation_state:
-                self._ship_surface = pygame.transform.rotate(surface, HF.pting_vector_angle(obj._pointing_vector))
+            if obj._player_state['rotation state']:
+                
+                self._clipped_ship = self._sprite_obj['ship image']
+                self._clipped_ship.set_clip(pygame.Rect(0,0,90,90))
+                self._ship_surface = self._clipped_ship.subsurface(self._clipped_ship.get_clip())
+                surface = self._ship_surface
+                orig_rect = surface.get_rect()                
+                rot_image = pygame.transform.rotate(surface, obj._player_state['ship angle'])
+                rot_rect = orig_rect.copy()
+                rot_rect.center = rot_image.get_rect().center
+                rot_image = rot_image. subsurface(rot_rect).copy()
+                
+                '''
+                self._clipped_ship = self._sprite_obj['ship image']
+                self._clipped_ship.set_clip(pygame.Rect(0,0,90,90))
+                rect = surface.surface.get_rect()
+                rect.center = surface.center
+                '''
+                
+                # pygame.transform.rotate(Tardis, tardis_angle)                
+                
+                self._ship_surface = self._clipped_ship.subsurface(self._clipped_ship.get_clip())
+                self._ship_surface = rot_image
             
         def get_draw_state(self, idx):
             return self._draw_states[idx]
@@ -162,7 +184,7 @@ def main():
 
         for event in pygame.event.get():
             '''
-            instead of having a huge number of if branches to assess the events, maybe
+            instead of having a huge number of if-branches to assess the events, maybe
             we can pass the event to an event handler which returns a dictionary/hash table
             that describes the state of the game/player (i.e. {game_state: True, player_health: 100, etc...})
             '''

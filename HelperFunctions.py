@@ -11,6 +11,16 @@ def rotate_vector(pting_vector, angle):
     rotated_vector = None
     return rotated_vector
 
+def unit_vector(angle):
+    # returns unit vectors x and y such that it represents the direction
+    # of an entity
+    # returns [x-unit vector, y-unit vector]
+
+    radians = math.radians(angle)
+    unitVector = [math.cos(radians), -1*math.sin(radians)]
+    
+    return unitVector
+
 def pting_vector_angle(pting_vector):
     if pting_vector[0] < 0.00001:
         pting_vector[0] = .00001
