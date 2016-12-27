@@ -20,10 +20,12 @@ class Sprites:
         self._game_intro = pygame.image.load("splash.png")
         self._nebula_image = pygame.image.load("nebula_blue.png")
         self._ship_image = pygame.image.load("double_ship.png")
+        self._asteroid_image = pygame.image.load("asteroid_blue.png")
         
         self._game_images = {'game intro' : self._game_intro,
                              'nebula image' : self._nebula_image,
-                             'ship image' : self._ship_image}
+                             'ship image' : self._ship_image,
+                             'asteroid image' : self._asteroid_image}
 
 
     def __getitem__(self, idx):

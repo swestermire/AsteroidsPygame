@@ -22,11 +22,12 @@ class Physics:
         return self._linear_vel
         
     def set_pos(self):
-        
+        '''
+        calculates objects final position according to movement and screen boundary conditions
+        '''
         xPos = self._pos[0] + self._linear_vel[0]
         yPos = self._pos[1] + self._linear_vel[1] 
         pos = self.collisionCheck(xPos, yPos)
-        print('position is = ' , pos)
         self._pos = [pos[0], pos[1]]        
         
     def collisionCheck(self, xPos, yPos):

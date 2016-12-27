@@ -76,10 +76,18 @@ class AsteroidsGame(object):
         This will draw the objects on the game to the user.
         '''
 
-        def __init__(self, sprite_obj, player_obj, height = 700, width = 700):
+        def __init__(self, 
+                     sprite_obj, 
+                     player_obj, 
+                     asteroids_obj, 
+                     height = 700, 
+                     width = 700):
+                         
             print('Initializing Asteroids Draw Handlers...')
             self._sprite_obj = sprite_obj
             self._player_obj = player_obj
+            self._asteroids_obj = asteroids_obj
+            
             self._screen = pygame.display.set_mode((height,width))
             self._draw_states = {'screen height': height,
                                  'screen width': width,
@@ -100,6 +108,10 @@ class AsteroidsGame(object):
             self._player_obj.reset_pos(self._draw_states['screen height'],
                                        self._draw_states['screen width'])            
             
+            self._clipped_asteroid = self._sprite_obj['asteroid image']
+            self._clipped_asteroid.set_clip(pygame.Rect(0,0,90,90))
+            self._asteroid_surface = self._clipped_asteroid.subsurface(self._clipped_asteroid.get_clip())
+            
         def game_state(self, mode):
             '''
             game_state method will control what images, windows, layouts are drawn to the user.
@@ -111,7 +123,15 @@ class AsteroidsGame(object):
                 return self._screen.blit(self._sized_game_intro, (0,0))
             elif mode == 'main game':
                 self._screen.blit(self._sized_nebula, (0,0))
-
+                
+                # when game starts, create, move, and rotate asteroids
+                self._asteroids_obj.spawnAsteroid()                
+                if (self._asteroids_obj._state["active asteroids hash"]):
+                    for asteroid in self._asteroids_obj._state["active asteroids hash"].values():                 
+                        self._screen.blit(self._asteroid_surface, 
+                                          asteroid["position"])
+                
+                # rotating ship image
                 self.update_rotated_image(self._ship_surface, self._player_obj)
                 
                 # this function call initiates the ship update/screen draw
@@ -176,9 +196,10 @@ def main():
     #initializing game objects
     sprite_obj = Sprites.Sprites()
     player_obj = Players.Player()
+    asteroids_obj = Players.Asteroids()
     
     event_handler_obj = AsteroidsGame.Event_Handler(player_obj)
-    draw_handler_obj = AsteroidsGame.Draw_Handler(sprite_obj, player_obj)
+    draw_handler_obj = AsteroidsGame.Draw_Handler(sprite_obj, player_obj, asteroids_obj)
     
     state = 'blank screen'
     

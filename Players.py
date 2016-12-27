@@ -1,4 +1,5 @@
 import Physics as physicsFile
+import random
 
 class Player(physicsFile.Physics):
     '''
@@ -23,52 +24,72 @@ class Player(physicsFile.Physics):
                               "rotation state" : False , 
                               "thrust state" : False,
                               'draw handler obj' : ""}
-        
-        
-        
-        
-        
-        
-        
+                              
+class Asteroids(physicsFile.Physics):
     '''
-    def thrust_on_off(self, state):
-        if state == 'on':
-            self._thrust_state = True
-        elif state == 'off':
-            self._thrust_state = False
-        elif state == True or state == False:
-            self._thrust_state = state
-        else:
-            print('Thrust input error, look at def thrust_on_off function')
-            
-    def get_vel(self):
-        return self._linear_vel
-        
-    def set_pos(self):
-        self._pos[0] += self._linear_vel[0]
-        self._pos[1] += self._linear_vel[1]
-
-    def reset_pos(self, screen_height, screen_width):
-        self._pos = [screen_width/2, screen_height/2]
-        
-    def get_pos(self):
-        self.vel_acc(self._pointing_vector)
-        return self._pos
-
-    def update_pting_vector(self, angle):
-        self._pointing_vector = angle #need to update    
-
-    def vel_acc(self, pting_vector):
-        if self._thrust_state:
-            if HF.calc_speed(self._linear_vel) < self._max_linear_vel:
-                self._linear_vel[0] += pting_vector[0] * self._linear_acc[0]
-                self._linear_vel[1] += pting_vector[1] * self._linear_acc[1]
-            elif HF.calc_speed(self._linear_vel) > self._max_linear_vel:
-                # need to adjust velocity if velocity is over max
-                None
-
-        self.set_pos()
+    class for asteroids that spawn in-game
     '''
-
+    def __init__(self):
+        self._state = { "active asteroids hash" : {},
+                        "asteroid count" : 0,
+                        "asteroid spawn counter" : 0,
+                        "asteroid spawn frequency" : 120 }
     
+    def spawnAsteroid(self):
+        '''
+        Spawn asteroids based on number of times this function is called.  This basically
+        works as a rough counter.
+        '''
+        self._state["asteroid spawn counter"] += 1
+        
+        if (self._state["asteroid spawn counter"] % self._state["asteroid spawn frequency"] == 0):
+            self.addAsteroid()
+            self._state["asteroid spawn counter"] = 0
+            
+    def addAsteroid(self):
+        asteroidDict = {"velocity": random.randint(0,5),
+                        "pointing vector" : [1,0],
+                        "angle" : 0,
+                        "angular velocity" : random.randint(1,150)/100,
+                        "asteroid state" : "active",
+                        "position" : [random.randint(0,700),
+                                      random.randint(0,700)] }
+        print("asteroidDict = " , asteroidDict)              
+        self._state["active asteroids hash"][self._state["asteroid count"]] = asteroidDict
+        self._state["asteroid count"] += 1
+    
+    def hitAsteroid(self, asteroidID):
+        '''
+        behaviors that take place when an asteroid is hit
+        '''        
+        self._state["active asteroids hash"][asteroidID]["asteroid state"] = "exploding"        
+        
+        
+    def destroyAsteroid(self, asteroidID):
+        '''
+        destroys asteroid from self._asteroids_state based on passed index val
+        '''
+        
+        # Was thinking about making an inactive status for asteroids, but this would
+        # bog down on image rendering
+        # self._state["active asteroids hash"][asteroidID]["asteroid state"] = "destroyed"
+        
+        del self._state["active asteroids ID"][asteroidID]
+        
+    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
