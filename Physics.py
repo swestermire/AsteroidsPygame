@@ -62,7 +62,6 @@ class Physics:
             return "Error in update angle"
         return (finalAngle % 360)
         
-    
     #calls the function to update the ships pointing direction
     #updates the ships velocity in the x-y coordinate
     def vel_acc(self, pting_vector):

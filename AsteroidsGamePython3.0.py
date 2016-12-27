@@ -130,6 +130,8 @@ class AsteroidsGame(object):
                     for asteroid in self._asteroids_obj._state["active asteroids hash"].values():                 
                         self._screen.blit(self._asteroid_surface, 
                                           asteroid["position"])
+                #this could be done better                                          
+                self._asteroids_obj.updateAsteroidPositions()
                 
                 # rotating ship image
                 self.update_rotated_image(self._ship_surface, self._player_obj)
@@ -149,16 +151,7 @@ class AsteroidsGame(object):
                 rot_image = pygame.transform.rotate(surface, obj._player_state['ship angle'])
                 rot_rect = orig_rect.copy()
                 rot_rect.center = rot_image.get_rect().center
-                rot_image = rot_image. subsurface(rot_rect).copy()
-                
-                '''
-                self._clipped_ship = self._sprite_obj['ship image']
-                self._clipped_ship.set_clip(pygame.Rect(0,0,90,90))
-                rect = surface.surface.get_rect()
-                rect.center = surface.center
-                '''
-                
-                # pygame.transform.rotate(Tardis, tardis_angle)                
+                rot_image = rot_image. subsurface(rot_rect).copy()          
                 
                 self._ship_surface = self._clipped_ship.subsurface(self._clipped_ship.get_clip())
                 self._ship_surface = rot_image

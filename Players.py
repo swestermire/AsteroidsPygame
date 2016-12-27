@@ -47,16 +47,30 @@ class Asteroids(physicsFile.Physics):
             self._state["asteroid spawn counter"] = 0
             
     def addAsteroid(self):
-        asteroidDict = {"velocity": random.randint(0,5),
+        asteroidDict = {"velocity": [random.randint(0,5),
+                                     random.randint(0,5)] ,
                         "pointing vector" : [1,0],
                         "angle" : 0,
+                        "rotation state" : True,
+                        "thrust state" : True,
                         "angular velocity" : random.randint(1,150)/100,
                         "asteroid state" : "active",
                         "position" : [random.randint(0,700),
                                       random.randint(0,700)] }
-        print("asteroidDict = " , asteroidDict)              
+         
         self._state["active asteroids hash"][self._state["asteroid count"]] = asteroidDict
         self._state["asteroid count"] += 1
+    
+    def updateAsteroidPositions(self):
+        '''
+        Updates all asteroid positions based on their velocity and point vector
+        '''
+        
+        for asteroid in self._state["active asteroids hash"].values():
+            position = asteroid["position"]
+            position[0] += asteroid["pointing vector"][0] * asteroid['velocity'][0]
+            position[1] += asteroid["pointing vector"][1] * asteroid['velocity'][1]
+            asteroid["position"] = position
     
     def hitAsteroid(self, asteroidID):
         '''
