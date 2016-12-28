@@ -27,10 +27,11 @@ class Physics:
         '''
         xPos = self._pos[0] + self._linear_vel[0]
         yPos = self._pos[1] + self._linear_vel[1] 
-        pos = self.collisionCheck(xPos, yPos)
+        pos = self.boundaryCheck(xPos, yPos)
         self._pos = [pos[0], pos[1]]        
+    
+    def boundaryCheck(self, xPos, yPos):
         
-    def collisionCheck(self, xPos, yPos):
         if xPos > self._player_state['draw handler obj']._draw_states['screen width']:
             return (0 , yPos)
         elif xPos < 0:
@@ -41,7 +42,31 @@ class Physics:
             return (xPos, 0)
         else:
             return (xPos, yPos)
+            
+    def asteroidsBoundaryCheck(self, 
+                               xPos, 
+                               yPos, 
+                               canvasDrawStates):
+        '''
+        function that checks asteroids for frame boundaries.  This should be integrated
+        with the boundaryCheck() function... but I'm having trouble passing the screen width
+        and height...
+        '''
         
+        screenWidth = canvasDrawStates['screen width']
+        screenHeight = canvasDrawStates['screen height']
+        
+        if xPos > screenWidth:
+            return (0 , yPos)
+        elif xPos < 0:
+            return (screenWidth , yPos)
+        elif yPos < 0:
+            return (xPos , screenHeight)
+        elif yPos > screenHeight:
+            return (xPos, 0)
+        else:
+            return (xPos, yPos)
+            
     def reset_pos(self, screen_height, screen_width):
         self._pos = [screen_width/2, screen_height/2]
         

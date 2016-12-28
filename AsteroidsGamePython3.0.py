@@ -131,7 +131,7 @@ class AsteroidsGame(object):
                         self._screen.blit(self._asteroid_surface, 
                                           asteroid["position"])
                 #this could be done better                                          
-                self._asteroids_obj.updateAsteroidPositions()
+                self._asteroids_obj.updateAsteroidPositions(self._draw_states)
                 
                 # rotating ship image
                 self.update_rotated_image(self._ship_surface, self._player_obj)

@@ -33,8 +33,8 @@ class Asteroids(physicsFile.Physics):
         self._state = { "active asteroids hash" : {},
                         "asteroid count" : 0,
                         "asteroid spawn counter" : 0,
-                        "asteroid spawn frequency" : 120 }
-    
+                        "asteroid spawn frequency" : 120}
+                        
     def spawnAsteroid(self):
         '''
         Spawn asteroids based on number of times this function is called.  This basically
@@ -47,9 +47,11 @@ class Asteroids(physicsFile.Physics):
             self._state["asteroid spawn counter"] = 0
             
     def addAsteroid(self):
+        randomVal = random.randint(0,100)/100
+        
         asteroidDict = {"velocity": [random.randint(0,5),
                                      random.randint(0,5)] ,
-                        "pointing vector" : [1,0],
+                        "pointing vector" : [randomVal, 1-randomVal],
                         "angle" : 0,
                         "rotation state" : True,
                         "thrust state" : True,
@@ -61,17 +63,21 @@ class Asteroids(physicsFile.Physics):
         self._state["active asteroids hash"][self._state["asteroid count"]] = asteroidDict
         self._state["asteroid count"] += 1
     
-    def updateAsteroidPositions(self):
+    def updateAsteroidPositions(self, canvasDrawStates):
         '''
         Updates all asteroid positions based on their velocity and point vector
         '''
-        
         for asteroid in self._state["active asteroids hash"].values():
             position = asteroid["position"]
             position[0] += asteroid["pointing vector"][0] * asteroid['velocity'][0]
             position[1] += asteroid["pointing vector"][1] * asteroid['velocity'][1]
-            asteroid["position"] = position
-    
+            
+            xPos, yPos = self.asteroidsBoundaryCheck(position[0], 
+                                                     position[1],
+                                                     canvasDrawStates)            
+            asteroid["position"] = [xPos, yPos]
+            
+
     def hitAsteroid(self, asteroidID):
         '''
         behaviors that take place when an asteroid is hit
