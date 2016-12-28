@@ -66,7 +66,7 @@ class Physics:
             return (xPos, 0)
         else:
             return (xPos, yPos)
-            
+          
     def reset_pos(self, screen_height, screen_width):
         self._pos = [screen_width/2, screen_height/2]
         

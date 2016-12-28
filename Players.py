@@ -23,8 +23,34 @@ class Player(physicsFile.Physics):
                               "ship angle" : 0,
                               "rotation state" : False , 
                               "thrust state" : False,
-                              'draw handler obj' : ""}
+                              'draw handler obj' : "",
+                              "player shots" : {},
+                              "player shots count" : 0}
                               
+    def fireShot(self):
+        copyPos = [self._pos[0], self._pos[1]] 
+        shotDict = {"shot velocity" : 5,
+                    "pointing vector" : self._player_state["pointing vector"],
+                    "position" : copyPos,
+                    "life span" : 240}
+                    
+        self._player_state["player shots"][self._player_state["player shots count"]] = shotDict
+        self._player_state["player shots count"] += 1
+    
+    def updateFiredShots(self):
+        if self._player_state['player shots'].values():
+            for shot in self._player_state['player shots'].values():
+                
+                shot['position'][0] += shot['pointing vector'][0] * shot['shot velocity']
+                shot['position'][1] += shot['pointing vector'][1] * shot['shot velocity']
+    
+    
+    def clearShot(self, ID):
+        """
+        Pass ID to clear shot from the game entirely
+        """
+        del self._player_state["player shots"][ID]
+                                      
 class Asteroids(physicsFile.Physics):
     '''
     class for asteroids that spawn in-game

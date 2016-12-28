@@ -47,9 +47,12 @@ class AsteroidsGame(object):
 
                 elif event.key == pygame.K_DOWN:
                     return
+                
+                elif event.key == pygame.K_SPACE:
+                    return
 
             elif event.type == pygame.KEYUP:  #handler for key up events
-
+                
                 if event.key == pygame.K_LEFT:
                     self._player_obj._player_state['rotation state'] = False
 
@@ -61,6 +64,9 @@ class AsteroidsGame(object):
 
                 elif event.key == pygame.K_UP:
                     self._player_obj._player_state['thrust state'] = False
+
+                elif event.key == pygame.K_SPACE:
+                    self._player_obj.fireShot()
 
             elif event.type == pygame.MOUSEBUTTONUP:
                 if draw_handler_obj.get_draw_state('screen state')  == 'blank screen':
@@ -100,17 +106,25 @@ class AsteroidsGame(object):
             self._sized_nebula = pygame.transform.scale(self._sprite_obj['nebula image'],
                                                         (self._draw_states['screen height'],
                                                          self._draw_states['screen width']))
-
+            
+            # could probably shove this code into Sprite class            
+            #creating ship image
             self._clipped_ship = self._sprite_obj['ship image']
             self._clipped_ship.set_clip(pygame.Rect(0,0,90,90))
             self._ship_surface = self._clipped_ship.subsurface(self._clipped_ship.get_clip())
-
+            
             self._player_obj.reset_pos(self._draw_states['screen height'],
                                        self._draw_states['screen width'])            
             
+            #creating asteroid image
             self._clipped_asteroid = self._sprite_obj['asteroid image']
             self._clipped_asteroid.set_clip(pygame.Rect(0,0,90,90))
             self._asteroid_surface = self._clipped_asteroid.subsurface(self._clipped_asteroid.get_clip())
+            
+            #creating shot image
+            self._clipped_shot = self._sprite_obj['shot image']
+            self._clipped_shot.set_clip(pygame.Rect(0,0,45,45))
+            self._shot_surface = self._clipped_shot.subsurface(self._clipped_shot.get_clip())        
             
         def game_state(self, mode):
             '''
@@ -132,6 +146,15 @@ class AsteroidsGame(object):
                                           asteroid["position"])
                 #this could be done better                                          
                 self._asteroids_obj.updateAsteroidPositions(self._draw_states)
+                
+                
+                # draws and updates shots when needed
+                self._player_obj.updateFiredShots()
+                if (self._player_obj._player_state["player shots"].values()):
+                    for shot in self._player_obj._player_state['player shots'].values():
+                        
+                        self._screen.blit(self._shot_surface, 
+                                          shot['position'])                        
                 
                 # rotating ship image
                 self.update_rotated_image(self._ship_surface, self._player_obj)
