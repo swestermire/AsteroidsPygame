@@ -29,4 +29,10 @@ def pting_vector_angle(pting_vector):
         
     angle = math.degrees(math.atan(float(pting_vector[1])/float(pting_vector[0])))
     return angle
-    
+
+def calcDistance(coord1, coord2):
+    '''
+    distance for 2 dimensional plane
+    '''
+    distance = math.sqrt(math.pow((coord1[0] - coord2[0]),2) + math.pow(coord1[1] - coord2[1],2))
+    return distance

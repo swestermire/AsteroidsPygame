@@ -1,5 +1,6 @@
 import Physics as physicsFile
-import random
+import HelperFunctions as HF
+import random, math
 
 class Player(physicsFile.Physics):
     '''
@@ -74,10 +75,13 @@ class Asteroids(physicsFile.Physics):
             
     def addAsteroid(self):
         randomVal = random.randint(0,100)/100
+        randomInt1 = random.randint(1,2)
+        randomInt2 = random.randint(1,2)
         
-        asteroidDict = {"velocity": [random.randint(0,5),
-                                     random.randint(0,5)] ,
-                        "pointing vector" : [randomVal, 1-randomVal],
+        asteroidDict = {"velocity": [5 * randomVal,
+                                     1 - 5 * randomVal],
+                        "pointing vector" : [math.pow(-1, randomInt1) * randomVal, 
+                                             math.pow(-1, randomInt2) * (1-randomVal)],
                         "angle" : 0,
                         "rotation state" : True,
                         "thrust state" : True,
@@ -103,13 +107,29 @@ class Asteroids(physicsFile.Physics):
                                                      canvasDrawStates)            
             asteroid["position"] = [xPos, yPos]
             
-
+    def checkHit(self, obj):
+        shotsList = obj._player_state["player shots"]
+        if (self._state["active asteroids hash"].values() and shotsList.values()):
+            hitAsteroids = []
+            clearedShots = []
+            for asteroidID in self._state["active asteroids hash"]:
+                for shotID in shotsList:
+                    dist = HF.calcDistance(shotsList[shotID]['position'], self._state["active asteroids hash"][asteroidID]['position'])
+                    if dist <= 45:
+                        hitAsteroids.append(asteroidID)
+                        clearedShots.append(shotID)
+                
+            for ID in hitAsteroids:            
+                self.hitAsteroid(ID)
+            for ID in clearedShots:
+                obj.clearShot(ID)
+        
     def hitAsteroid(self, asteroidID):
         '''
         behaviors that take place when an asteroid is hit
         '''        
         self._state["active asteroids hash"][asteroidID]["asteroid state"] = "exploding"        
-        
+        self.destroyAsteroid(asteroidID)
         
     def destroyAsteroid(self, asteroidID):
         '''
@@ -120,7 +140,7 @@ class Asteroids(physicsFile.Physics):
         # bog down on image rendering
         # self._state["active asteroids hash"][asteroidID]["asteroid state"] = "destroyed"
         
-        del self._state["active asteroids ID"][asteroidID]
+        del self._state["active asteroids hash"][asteroidID]
         
     
         

@@ -138,6 +138,9 @@ class AsteroidsGame(object):
             elif mode == 'main game':
                 self._screen.blit(self._sized_nebula, (0,0))
                 
+                # checks to see if asteroid was hit
+                self._asteroids_obj.checkHit(self._player_obj)                
+                
                 # when game starts, create, move, and rotate asteroids
                 self._asteroids_obj.spawnAsteroid()                
                 if (self._asteroids_obj._state["active asteroids hash"]):
